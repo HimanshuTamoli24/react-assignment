@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🖥️ Simple Dashboard App
 
-## Getting Started
+A lightweight **Next.js dashboard** for managing products with **search, add, edit, and delete** functionality.  
+Instant UI updates, responsive design, works beautifully on **desktop & mobile**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ⚡ Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 🔍 Search products  
+- ➕ Add products via dialog  
+- ✏️ Edit product details instantly  
+- ❌ Delete products easily  
+- 📊 Simple dashboard UI with charts & responsive design  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📱 Demo
 
-## Learn More
+### Desktop Screenshots
+![Desktop 1](https://github.com/user-attachments/assets/55dae366-7c47-496d-a3a4-6e31f71f709b)
+![Desktop 2](https://github.com/user-attachments/assets/d8bf6952-9474-44f5-96b9-505f0e048ed2)
 
-To learn more about Next.js, take a look at the following resources:
+### Mobile Screenshots
+![Mobile 1](https://github.com/user-attachments/assets/718b0f8a-07ee-4960-ae8b-492266eef02a)
+![Mobile 2](https://github.com/user-attachments/assets/43b54bb2-32c8-49ad-8a5e-1b49d5559af7)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Video Demo
+[Watch Demo Video](https://github.com/user-attachments/assets/e939fe9d-c630-4a77-b249-c2d56be8f04c) 🎥
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📦 Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Framework:** Next.js  
+- **State Management:** Zustand + React Query  
+- **Styling:** TailwindCSS  
+- **Icons:** Lucide React  
+- **Charts:** Recharts  
+- **API:** Axios  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
