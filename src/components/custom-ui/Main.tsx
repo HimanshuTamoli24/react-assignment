@@ -134,7 +134,7 @@ export default function Table() {
  
 
   return (
-    <div className="w-full px-4 py-6">
+    <div className="w-full px-2 pt-2">
 
 
       <Header

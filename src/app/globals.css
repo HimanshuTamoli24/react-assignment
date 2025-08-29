@@ -122,6 +122,6 @@
 }
 
 body{
-  overflow: hidden;
+  /* overflow: hidden; */
   scrollbar-width: none;
 }
