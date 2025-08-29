@@ -3,7 +3,7 @@
 import { DottedMultiLineChart, GradientRoundedAreaChart } from "@/components/custom-ui/Chart";
 import { useProductStore } from "@/store/products";
 import React from "react";
-import { Badge } from "@/components/ui/badge";
+    
 
 function DashboardPage() {
     const products = useProductStore((state) => state.products);
@@ -16,9 +16,9 @@ function DashboardPage() {
     }));
 
     const dottedChartData = products.map((p) => ({
-        label: p.brand,
-        value1: p.discountPercentage,
-        value2: p.stock,
+        label: String(p.brand ?? "Unknown"), 
+        value1: Number(p.discountPercentage ?? 0), 
+        value2: Number(p.stock ?? 0), 
     }));
 
     // Calculate some quick stats
@@ -70,7 +70,7 @@ function DashboardPage() {
             </div>
 
             <p className="text-gray-600 text-sm"> for more details analysics hire me {"  "}
-                <span className="text-red-6 00 underline">
+                <span className="text-emerald-700 underline">
                     <a  target="_blank" href="mailto:himanshutamoli2005@gmail.com">himanshutamoli2005@gmail.com</a> 
                 </span>😉</p>
         </div>

@@ -5,9 +5,9 @@ export interface Product {
   price: number;
   category: string;
   stock: number;
-  rating?:number
+  rating:number
   discountPercentage?:number;
-  brand?:number
+  brand:number
 }
 
 

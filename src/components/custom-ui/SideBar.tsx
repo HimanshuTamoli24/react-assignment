@@ -63,21 +63,23 @@ function SideBar() {
         <nav className="space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
+            const isExternal = item.name === "GitHub" || item.name === "My Girlfreind";
+
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                target={item.name === "GitHub" || "My Girlfreind" ? "_blank" : "_self"}
-                onClick={() => setIsOpen(false)} // close sidebar on small screen when a link is clicked
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-black/5"
-                )}
+                target={isExternal ? "_blank" : "_self"}
+                rel={isExternal ? "noopener noreferrer" : undefined} // secure external links
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-black/5"
               >
                 <Icon className="h-5 w-5" />
-                <span className="">{item.name}</span>
+                <span>{item.name}</span>
               </Link>
             );
           })}
+
         </nav>
       </aside>
     </>

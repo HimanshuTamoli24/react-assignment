@@ -20,7 +20,7 @@ const Header: React.FC<HeaderProps> = ({
   selectedCategory,
 }) => {
   return (
-    <div className="flex  hidden flex-col sm:flex-row justify-between items-stretch sm:items-center mb-4 gap-4 p-4 shadow-sm border rounded-xl">
+    <div className="flex   flex-col sm:flex-row justify-between items-stretch sm:items-center mb-4 gap-4 p-4 shadow-sm border rounded-xl">
       
       {/* Left: Search + Select */}
       <div className="flex flex-col sm:flex-row flex-1 gap-2 w-full">

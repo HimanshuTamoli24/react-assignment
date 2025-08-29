@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import type { QueryKey } from "@tanstack/react-query";
 
 import Header from "./Header";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -6,11 +7,9 @@ import { getProducts, deleteProduct, updateProduct } from "@/helper/api/apis";
 import { Product } from "@/types/types";
 import { Loader, AlertTriangle, MoveLeft, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 import { useProductStore } from "@/store/products";
 import Tabler from "./Tabler";
-import { GradientRoundedAreaChart } from "./Chart";
 
 
 export default function Table() {
@@ -33,7 +32,6 @@ export default function Table() {
   const setProducts = useProductStore((state) => state.setProducts);
   const products = useProductStore((state) => state.products);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
-
   const [editData, setEditData] = useState({
     title: "",
     price: 0,
@@ -75,7 +73,7 @@ export default function Table() {
   const editMutation = useMutation({
     mutationFn: (product: Product) => updateProduct(product.id, product),
     onMutate: async (product) => {
-      await queryClient.cancelQueries(["products"]);
+      await queryClient.cancelQueries(["products"] as QueryKey);
       const previousData = queryClient.getQueryData(["products"]);
       queryClient.setQueryData(["products"], (oldData: any) => ({
         ...oldData,
