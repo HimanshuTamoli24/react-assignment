@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import type { QueryKey } from "@tanstack/react-query";
-
-import Header from "./Header";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Header from "./Header";
+import Tabler from "./Tabler";
 import { getProducts, deleteProduct, updateProduct } from "@/helper/api/apis";
 import { Product } from "@/types/types";
 import { Loader, AlertTriangle, MoveLeft, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 import { useProductStore } from "@/store/products";
-import Tabler from "./Tabler";
-
 
 export default function Table() {
   const queryClient = useQueryClient();
@@ -23,6 +20,7 @@ export default function Table() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   const [page, setPage] = useState(1);
   const limit = 10;
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,11 +44,8 @@ export default function Table() {
   });
 
   useEffect(() => {
-    if (data?.products) {
-      setProducts(data.products);
-    }
+    if (data?.products) setProducts(data.products);
   }, [data, setProducts]);
-  // console.log("products", products);
 
   // Optimistic delete
   const deleteMutation = useMutation({
@@ -69,7 +64,7 @@ export default function Table() {
     },
   });
 
-  // Optimistic edit for multiple fields
+  // Optimistic edit
   const editMutation = useMutation({
     mutationFn: (product: Product) => updateProduct(product.id, product),
     onMutate: async (product) => {
@@ -98,6 +93,19 @@ export default function Table() {
     });
   };
 
+  // ====== ADD DIALOG ======
+  const openAddDialog = () => {
+    setEditData({ title: "", price: 0, stock: 0, category: "" });
+    setAddDialogOpen(true);
+  };
+
+  const saveNewProduct = () => {
+    const newProduct: Product = { id:Math.ceil(Math.random() * 1000), ...editData };
+    setProducts([newProduct, ...products]);
+    setAddDialogOpen(false);
+  };
+  // =======================
+
   if (isLoading)
     return (
       <div className="flex items-center justify-center h-64">
@@ -119,60 +127,53 @@ export default function Table() {
         No products found.
       </div>
     );
-  
 
   const filteredProducts = products.filter((product: Product) => {
-    const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = product.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const matchesCategory =
       selectedCategory === "" || selectedCategory === "All Categories"
         ? true
         : product.category === selectedCategory;
-
     return matchesSearch && matchesCategory;
   });
 
- 
-
   return (
     <div className="w-full px-2 pt-2">
-
-
       <Header
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         selectedCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
-        onAddProduct={() => setAddDialogOpen(true)}
+        onAddProduct={openAddDialog}
       />
 
-
+      {/* Pagination info & controls */}
       <div className="flex items-center justify-between mt-4 px-4 py-2 bg-gray-50 rounded-md shadow-sm">
-        {/* Page info */}
         <div className="hidden text-sm">
           <span>Showing</span>{" "}
           <span className="font-medium ">
-            {(page - 1) * limit + 1}–
-            {Math.min(page * limit, data?.total || 0)}
+            {(page - 1) * limit + 1}–{Math.min(page * limit, data?.total || 0)}
           </span>{" "}
           of <span className="font-medium">{data?.total || 0}</span> products
         </div>
-
-        {/* Page info */}
         <div className="text-sm whitespace-nowrap">
           <span>Page</span>{" "}
           <span className="font-medium">{page}</span> of{" "}
-          <span className="font-medium">{Math.ceil((data?.total || 0) / limit)}</span>
+          <span className="font-medium">
+            {Math.ceil((data?.total || 0) / limit)}
+          </span>
         </div>
-
-        {/* Pagination controls */}
         <div className="flex items-center gap-2">
           <Button
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             disabled={page === 1}
             variant="outline"
-            className=" shadow-sm text-sm font-medium"
+            className="shadow-sm text-sm font-medium"
           >
-            <span className="hidden sm:block">Previous</span> <MoveLeft className="  block sm:hidden" />
+            <span className="hidden sm:block">Previous</span>{" "}
+            <MoveLeft className="block sm:hidden" />
           </Button>
 
           <Button
@@ -183,14 +184,16 @@ export default function Table() {
             }
             disabled={page === Math.ceil((data?.total || 0) / limit)}
             variant="outline"
-            className=" shadow-sm text-sm font-medium"
+            className="shadow-sm text-sm font-medium"
           >
-            <span className="hidden sm:block"> Next</span> <MoveRight className="  block sm:hidden" />
-
+            <span className="hidden sm:block">Next</span>{" "}
+            <MoveRight className="block sm:hidden" />
           </Button>
         </div>
       </div>
-      <Tabler filteredProducts={filteredProducts}
+
+      <Tabler
+        filteredProducts={filteredProducts}
         searchTerm={searchTerm}
         openEdit={openEdit}
         setDeleteId={setDeleteId}
@@ -202,11 +205,68 @@ export default function Table() {
         windowWidth={windowWidth}
         deleteId={deleteId}
         setEditData={setEditData}
-        
-         />
+      />
 
+      {/* ADD PRODUCT MODAL */}
+      {addDialogOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md">
+            <h2 className="text-lg font-semibold mb-4">Add Product</h2>
 
+            <input
+              type="text"
+              placeholder="Title"
+              value={editData.title}
+              onChange={(e) =>
+                setEditData({ ...editData, title: e.target.value })
+              }
+              className="border p-2 w-full mb-2 rounded"
+            />
+            <input
+              type="number"
+              placeholder="Price"
+              value={editData.price}
+              onChange={(e) =>
+                setEditData({ ...editData, price: Number(e.target.value) })
+              }
+              className="border p-2 w-full mb-2 rounded"
+            />
+            <input
+              type="number"
+              placeholder="Stock"
+              value={editData.stock}
+              onChange={(e) =>
+                setEditData({ ...editData, stock: Number(e.target.value) })
+              }
+              className="border p-2 w-full mb-2 rounded"
+            />
+            <input
+              type="text"
+              placeholder="Category"
+              value={editData.category}
+              onChange={(e) =>
+                setEditData({ ...editData, category: e.target.value })
+              }
+              className="border p-2 w-full mb-4 rounded"
+            />
 
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-4 py-2 bg-gray-200 rounded"
+                onClick={() => setAddDialogOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-black text-white rounded"
+                onClick={saveNewProduct}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
