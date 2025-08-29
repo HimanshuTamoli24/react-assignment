@@ -31,16 +31,17 @@ export default function Table() {
   const products = useProductStore((state) => state.products);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editData, setEditData] = useState({
-    title: "",
+    title: "random",
     price: 0,
     stock: 0,
-    category: "",
+    category: "random",
   });
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["products"],
     queryFn: () => getProducts(limit, (page - 1) * limit),
-    refetchInterval: 1000,
+    // refetchInterval: 1000,
+    staleTime: Infinity,  
   });
 
   useEffect(() => {
@@ -65,23 +66,26 @@ export default function Table() {
   });
 
   // Optimistic edit
-  const editMutation = useMutation({
-    mutationFn: (product: Product) => updateProduct(product.id, product),
-    onMutate: async (product) => {
-      await queryClient.cancelQueries(["products"] as QueryKey);
-      const previousData = queryClient.getQueryData(["products"]);
-      queryClient.setQueryData(["products"], (oldData: any) => ({
-        ...oldData,
-        products: oldData.products.map((p: Product) =>
-          p.id === product.id ? { ...p, ...product } : p
-        ),
-      }));
-      return { previousData };
-    },
-    onError: (err, product, context) => {
-      queryClient.setQueryData(["products"], context?.previousData);
-    },
-  });
+// Optimistic edit
+const editMutation = useMutation({
+  mutationFn: (product: Product) => updateProduct(product.id, product),
+  onMutate: async (product) => {
+    await queryClient.cancelQueries(["products"] as QueryKey);
+    const previousData = queryClient.getQueryData(["products"]);
+
+    // Optimistic update
+    queryClient.setQueryData(["products"], (oldData: any) => ({
+      ...oldData,
+      products: oldData.products.map((p: Product) =>
+        p.id === product.id ? { ...p, ...product } : p
+      ),
+    }));
+
+    return { previousData };
+  },
+  
+});
+
 
   const openEdit = (product: Product) => {
     setEditProduct(product);
@@ -213,12 +217,12 @@ export default function Table() {
           <div className="bg-white p-6 rounded-lg w-full max-w-md">
             <h2 className="text-lg font-semibold mb-4">Add Product</h2>
 
-            <input
+            <input required
               type="text"
               placeholder="Title"
               value={editData.title}
               onChange={(e) =>
-                setEditData({ ...editData, title: e.target.value })
+                setEditData({ ...editData, title: e.target.value||"random" })
               }
               className="border p-2 w-full mb-2 rounded"
             />
@@ -240,7 +244,7 @@ export default function Table() {
               }
               className="border p-2 w-full mb-2 rounded"
             />
-            <input
+            <input required
               type="text"
               placeholder="Category"
               value={editData.category}
