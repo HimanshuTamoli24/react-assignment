@@ -5,6 +5,9 @@ export interface Product {
   price: number;
   category: string;
   stock: number;
+  rating?:number
+  discountPercentage?:number;
+  brand?:number
 }
 
 
@@ -13,6 +16,7 @@ export interface ProductResponse {
   limit: number;
   skip: number;
   total?: number;
+  
 }
 
 
