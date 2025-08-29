@@ -120,3 +120,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+body{
+  overflow: hidden;
+  scrollbar-width: none;
+}
