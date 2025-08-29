@@ -1,22 +1,9 @@
 "use client"
 import Table from "@/components/custom-ui/Main"
-import SideBar from "@/components/custom-ui/SideBar";
-import { getProducts } from "@/utils/api/apis";
-import Image from "next/image";
-import { useEffect } from "react";
+
 
 export default function Home() {
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await getProducts(5, 0);
-        console.log("Products:", data);
-      } catch (err) {
-        console.error("Error:", err);
-      }
-    }
-    fetchData();
-  }, []);
+
   return (
     <div className="min-h-screen   ">
 
@@ -27,7 +14,7 @@ export default function Home() {
   );
 }
 import Link from "next/link";
-import { Github, LayoutDashboardIcon, Linkedin, ShoppingCart, User } from "lucide-react";
+import { Github, LayoutDashboardIcon, Linkedin } from "lucide-react";
 
 function Navbar() {
   return (
