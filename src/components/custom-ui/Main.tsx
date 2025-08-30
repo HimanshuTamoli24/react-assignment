@@ -38,10 +38,9 @@ export default function Table() {
   });
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["products"],
+    queryKey: ["products", page],
     queryFn: () => getProducts(limit, (page - 1) * limit),
     // refetchInterval: 1000,
-    staleTime: Infinity,  
   });
 
   useEffect(() => {
@@ -52,16 +51,16 @@ export default function Table() {
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteProduct(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries(["products"]);
-      const previousData = queryClient.getQueryData(["products"]);
-      queryClient.setQueryData(["products"], (oldData: any) => ({
+      await queryClient.cancelQueries(["products", page]);
+      const previousData = queryClient.getQueryData(["products", page]);
+      queryClient.setQueryData(["products", page], (oldData: any) => ({
         ...oldData,
         products: oldData.products.filter((p: Product) => p.id !== id),
       }));
       return { previousData };
     },
     onError: (err, id, context) => {
-      queryClient.setQueryData(["products"], context?.previousData);
+      queryClient.setQueryData(["products", page], context?.previousData);
     },
   });
 
@@ -70,11 +69,11 @@ export default function Table() {
 const editMutation = useMutation({
   mutationFn: (product: Product) => updateProduct(product.id, product),
   onMutate: async (product) => {
-    await queryClient.cancelQueries(["products"] as QueryKey);
-    const previousData = queryClient.getQueryData(["products"]);
+    await queryClient.cancelQueries(["products", page] as QueryKey);
+    const previousData = queryClient.getQueryData(["products", page]);
 
     // Optimistic update
-    queryClient.setQueryData(["products"], (oldData: any) => ({
+    queryClient.setQueryData(["products", page], (oldData: any) => ({
       ...oldData,
       products: oldData.products.map((p: Product) =>
         p.id === product.id ? { ...p, ...product } : p
