@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CustomQueryClientProvider } from "@/QueryClientProvider";
 import SideBar from "@/components/custom-ui/SideBar";
-
+import { Toaster } from "@/components/ui/sonner"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -37,6 +37,7 @@ export default function RootLayout({
             {/* Page content */}
             <main className="flex-1 p-6 bg-gray-50">
               {children}
+              <Toaster />
             </main>
           </div>
         </CustomQueryClientProvider>

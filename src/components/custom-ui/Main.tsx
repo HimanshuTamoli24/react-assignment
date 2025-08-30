@@ -8,6 +8,7 @@ import { Product } from "@/types/types";
 import { Loader, AlertTriangle, MoveLeft, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProductStore } from "@/store/products";
+import { toast } from "sonner";
 
 export default function Table() {
   const queryClient = useQueryClient();
@@ -51,7 +52,7 @@ export default function Table() {
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteProduct(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries(["products", page]);
+      await queryClient.cancelQueries({ queryKey: ["products", page] });
       const previousData = queryClient.getQueryData(["products", page]);
       queryClient.setQueryData(["products", page], (oldData: any) => ({
         ...oldData,
@@ -59,8 +60,12 @@ export default function Table() {
       }));
       return { previousData };
     },
+    onSuccess: () => {
+      toast.success("Product deleted successfully!");
+    },
     onError: (err, id, context) => {
       queryClient.setQueryData(["products", page], context?.previousData);
+      toast.error("Failed to delete product");
     },
   });
 
@@ -69,7 +74,7 @@ export default function Table() {
 const editMutation = useMutation({
   mutationFn: (product: Product) => updateProduct(product.id, product),
   onMutate: async (product) => {
-    await queryClient.cancelQueries(["products", page] as QueryKey);
+    await queryClient.cancelQueries({ queryKey: ["products", page] });
     const previousData = queryClient.getQueryData(["products", page]);
 
     // Optimistic update
@@ -82,7 +87,10 @@ const editMutation = useMutation({
 
     return { previousData };
   },
-  
+  onSuccess: () => {
+    toast.success("Product updated successfully!");
+  },
+ 
 });
 
 
@@ -103,9 +111,15 @@ const editMutation = useMutation({
   };
 
   const saveNewProduct = () => {
-    const newProduct: Product = { id:Math.ceil(Math.random() * 1000), ...editData };
+    const newProduct: Product = { 
+      id: Math.ceil(Math.random() * 1000), 
+      ...editData,
+      rating: 0,
+      brand: 0
+    };
     setProducts([newProduct, ...products]);
     setAddDialogOpen(false);
+    toast.success("Product added successfully!");
   };
   // =======================
 
